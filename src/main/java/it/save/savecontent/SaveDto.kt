@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package it.save.database
+package it.save.savecontent
 
-import com.zaxxer.hikari.HikariDataSource
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.jdbc.DataSourceBuilder
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import com.fasterxml.jackson.annotation.JsonInclude
+import java.util.*
 
-
-@Configuration
-open class PostgresDatabase {
-    @Bean
-    @ConfigurationProperties("app.datasource")
-    open fun dataSource(): HikariDataSource {
-        return DataSourceBuilder
-                .create()
-                .type(HikariDataSource::class.java)
-                .build()
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+data class SaveDto(val key: String, val content: String, val expiresIn: Int? = null) {
+    fun toSave(): Save {
+        val expiryTime = Calendar.getInstance().apply { if (expiresIn != null) add(Calendar.MINUTE, expiresIn) }
+        return Save(key, content, expiryTime.timeInMillis)
     }
 }

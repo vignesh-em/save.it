@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package it.save.database
+package it.save.savecontent
 
-import com.zaxxer.hikari.HikariDataSource
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.jdbc.DataSourceBuilder
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Repository
 
+@Repository("mock")
+open class MockDataAccessService : DataAccessService {
 
-@Configuration
-open class PostgresDatabase {
-    @Bean
-    @ConfigurationProperties("app.datasource")
-    open fun dataSource(): HikariDataSource {
-        return DataSourceBuilder
-                .create()
-                .type(HikariDataSource::class.java)
-                .build()
+    private val dataMap = mutableMapOf<String, Save>()
+
+    override fun saveContent(save: Save) {
+        dataMap[save.contentKey] = save
     }
+
+    override fun getContent(contentKey: String): Save {
+        val save = dataMap[contentKey] ?: return Save(contentKey)
+        if (save.hasExpired()) {
+            return Save(contentKey)
+        }
+        return save
+    }
+
 }
