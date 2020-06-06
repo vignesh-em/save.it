@@ -14,4 +14,9 @@
 # limitations under the License.
 #
 
-
+app:
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/saveit
+    username: postgres
+    password: password
+    pool-size: 30
