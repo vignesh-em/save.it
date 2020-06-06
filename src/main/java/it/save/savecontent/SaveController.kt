@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package it.save.database
+package it.save.savecontent
 
-import com.zaxxer.hikari.HikariDataSource
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.jdbc.DataSourceBuilder
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.bind.annotation.*
 
+@RestController
+@RequestMapping("api/v1/save")
+class SaveController @Autowired constructor(val service: SaveService) {
 
-@Configuration
-open class PostgresDatabase {
-    @Bean
-    @ConfigurationProperties("app.datasource")
-    open fun dataSource(): HikariDataSource {
-        return DataSourceBuilder
-                .create()
-                .type(HikariDataSource::class.java)
-                .build()
+    @GetMapping(path = ["{contentKey}"])
+    fun retrieveSavedContent(@PathVariable("contentKey") contentKey: String): Save {
+        return service.getSavedContent(contentKey)
+    }
+
+    @PostMapping
+    fun saveContent(@RequestBody save: Save) {
+        service.saveContent(save)
     }
 }
