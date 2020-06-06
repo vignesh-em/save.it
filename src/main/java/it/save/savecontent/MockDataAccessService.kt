@@ -28,7 +28,11 @@ open class MockDataAccessService : DataAccessService {
     }
 
     override fun getContent(contentKey: String): Save {
-        return dataMap[contentKey] ?: Save(contentKey)
+        val save = dataMap[contentKey] ?: return Save(contentKey)
+        if (save.hasExpired()) {
+            return Save(contentKey)
+        }
+        return save
     }
 
 }

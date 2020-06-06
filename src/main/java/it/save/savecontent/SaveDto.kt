@@ -16,20 +16,13 @@
 
 package it.save.savecontent
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
+import com.fasterxml.jackson.annotation.JsonInclude
+import java.util.*
 
-@RestController
-@RequestMapping("api/v1/save")
-class SaveController @Autowired constructor(private val service: SaveService) {
-
-    @GetMapping(path = ["{contentKey}"])
-    fun retrieveSavedContent(@PathVariable("contentKey") contentKey: String): SaveDto {
-        return service.getSavedContent(contentKey).toSaveDto()
-    }
-
-    @PostMapping
-    fun saveContent(@RequestBody contentObject: SaveDto) {
-        service.saveContent(contentObject.toSave())
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+data class SaveDto(val key: String, val content: String, val expiresIn: Int? = null) {
+    fun toSave(): Save {
+        val expiryTime = Calendar.getInstance().apply { if (expiresIn != null) add(Calendar.MINUTE, expiresIn) }
+        return Save(key, content, expiryTime.timeInMillis)
     }
 }
