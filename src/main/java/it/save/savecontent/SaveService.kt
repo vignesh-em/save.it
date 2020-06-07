@@ -17,10 +17,11 @@
 package it.save.savecontent
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 
 @Service
-class SaveService @Autowired constructor(val dao: DataAccessService) {
+class SaveService @Autowired constructor(@Qualifier("postgres") val dao: DataAccessService) {
     fun getSavedContent(contentKey: String): Save {
         return dao.getContent(contentKey)
     }

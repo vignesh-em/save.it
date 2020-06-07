@@ -18,10 +18,10 @@ package it.save.savecontent
 
 import java.util.*
 
-data class Save(val contentKey: String, val content: String = "", val expiryMillis: Long? = null) {
+data class Save(val contentKey: String, val content: String = "", val expiresAt: Long? = null) {
     fun hasExpired(): Boolean {
-        if (expiryMillis == null) return false
-        return Calendar.getInstance().timeInMillis > expiryMillis
+        if (expiresAt == null) return false
+        return Calendar.getInstance().timeInMillis > expiresAt
     }
 
     fun toSaveDto() = SaveDto(contentKey, content)
