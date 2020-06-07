@@ -14,12 +14,35 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom"
 
 function Board() {
 
     const {key} = useParams()
+
+    const [contentKey, setContentKey] = useState(key)
+    const [content, setContent] = useState("")
+
+    async function getContent(contentKey) {
+        const response = await fetch("http://localhost:8080/api/v1/save/" + contentKey)
+        const result = await response.json()
+        setContentKey(result.key)
+        console.log(result)
+        if (typeof result.content === "undefined") {
+            setContent("")
+        } else {
+            setContent(result.content)
+        }
+    }
+
+    useEffect(() => {
+        getContent(contentKey)
+    }, [])
+
+    function handleTextChange(event) {
+        setContent(event.target.value)
+    }
 
     return (
         <main className="main">
@@ -27,7 +50,7 @@ function Board() {
                 <div className="button">Save It</div>
                 <div className="button">Copy It</div>
             </div>
-            <textarea className="content-text-area" />
+            <textarea className="content-text-area" value={content} onChange={handleTextChange}/>
         </main>
     )
 }
