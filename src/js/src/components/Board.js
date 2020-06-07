@@ -16,6 +16,7 @@
 
 import React, {useEffect, useState} from "react";
 import {useParams} from "react-router-dom"
+import {CopyToClipboard} from "react-copy-to-clipboard";
 
 function Board() {
 
@@ -76,7 +77,9 @@ function Board() {
         <main className="main">
             <div className="button-container">
                 <div className="button" onClick={handleSaveClick}>Save It</div>
-                <div className="button">Copy It</div>
+                <CopyToClipboard text={content}>
+                    <div className="button">Copy It</div>
+                </CopyToClipboard>
             </div>
             {
                 saveStatus !== 0 &&
