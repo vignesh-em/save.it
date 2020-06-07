@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import './App.css';
-import Board from "./components/Board";
+import React from "react";
 
-function App() {
+function Board() {
     return (
-        <>
-            <header className="header">
-                <h1 className="app-title">save.it</h1>
-                <h3 className="app-subtitle">a clipboard for the web</h3>
-            </header>
-            <Board/>
-            <footer className="footer">
-                <p>Copyrights &copy; 2020</p>
-            </footer>
-        </>
-    );
+        <main className="main">
+            <div className="button-container">
+                <div className="button">Save It</div>
+                <div className="button">Copy It</div>
+            </div>
+            <textarea className="content-text-area" />
+        </main>
+    )
 }
 
-export default App;
+export default Board
