@@ -17,15 +17,36 @@
 import React from 'react';
 import './App.css';
 import Board from "./components/Board";
+import {Switch, Route, Redirect} from "react-router-dom";
 
 function App() {
+
+    function getRandomString() {
+        let result = "";
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        const charactersLength = characters.length;
+        for (var i = 0; i < 6; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
+    const randomKey = getRandomString()
+
     return (
         <>
             <header className="header">
                 <h1 className="app-title">save.it</h1>
                 <h3 className="app-subtitle">a clipboard for the web</h3>
             </header>
-            <Board/>
+            <Switch>
+                <Route exact path="/">
+                    <Redirect to={randomKey}/>
+                </Route>
+                <Route exact path="/:key">
+                    <Board/>
+                </Route>
+            </Switch>
             <footer className="footer">
                 <p>Copyrights &copy; 2020</p>
             </footer>

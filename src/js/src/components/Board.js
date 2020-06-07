@@ -14,16 +14,82 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {useParams} from "react-router-dom"
+import {CopyToClipboard} from "react-copy-to-clipboard";
 
 function Board() {
+
+    const {key} = useParams()
+
+    const [contentKey, setContentKey] = useState(key)
+    const [content, setContent] = useState("")
+    const [saveStatus, setSaveStatus] = useState(0)
+
+    async function getContent(contentKey) {
+        const response = await fetch("http://localhost:8080/api/v1/save/" + contentKey)
+        const result = await response.json()
+        setContentKey(result.key)
+        console.log(result)
+        if (typeof result.content === "undefined") {
+            setContent("")
+        } else {
+            setContent(result.content)
+        }
+    }
+
+    useEffect(() => {
+        getContent(contentKey)
+    }, [])
+
+    function handleTextChange(event) {
+        setContent(event.target.value)
+    }
+
+    async function saveContent(contentKey, content) {
+        const requestBody = {
+            key: contentKey,
+            content,
+            expiresIn: 5
+        }
+
+        const response = await fetch("http://localhost:8080/api/v1/save/", {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        });
+
+        if (response.status === 200) {
+            setSaveStatus(1)
+        } else {
+            setSaveStatus(2)
+        }
+    }
+
+    function handleSaveClick() {
+        setSaveStatus(0)
+        saveContent(contentKey, content)
+    }
+
     return (
         <main className="main">
             <div className="button-container">
-                <div className="button">Save It</div>
-                <div className="button">Copy It</div>
+                <div className="button" onClick={handleSaveClick}>Save It</div>
+                <CopyToClipboard text={content}>
+                    <div className="button">Copy It</div>
+                </CopyToClipboard>
             </div>
-            <textarea className="content-text-area" />
+            {
+                saveStatus !== 0 &&
+                <p className="status-text">
+                    {saveStatus === 1 && "Successfully added!"}
+                    {saveStatus === 2 && "Something went wrong!"}
+                </p>
+
+            }
+            <textarea className="content-text-area" value={content} onChange={handleTextChange}/>
         </main>
     )
 }
