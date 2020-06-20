@@ -73,6 +73,17 @@
     cursor: default;
 }
 
+.input-box {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    margin: 1em auto 1.5em auto;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.2rem;
+    cursor: default;
+}
+
 .button-container {
     display: flex;
 }

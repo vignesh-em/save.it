@@ -22,7 +22,10 @@ import java.util.*
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class SaveDto(val key: String, val content: String, val expiresIn: Int? = null) {
     fun toSave(): Save {
-        val expiryTime = Calendar.getInstance().apply { if (expiresIn != null) add(Calendar.MINUTE, expiresIn) }
+        val expiryTime = Calendar.getInstance().apply {
+            if (expiresIn != null && expiresIn <= 10 && expiresIn > 0) add(Calendar.MINUTE, expiresIn)
+            else add(Calendar.MINUTE, 5)
+        }
         return Save(key, content, expiryTime.timeInMillis)
     }
 }
