@@ -25,6 +25,7 @@ function Board() {
     const [contentKey, setContentKey] = useState(key)
     const [content, setContent] = useState("")
     const [saveStatus, setSaveStatus] = useState(0)
+    const [expiry, setExpiry] = useState(5)
 
     async function getContent(contentKey) {
         const response = await fetch("http://localhost:8080/api/v1/save/" + contentKey)
@@ -42,15 +43,15 @@ function Board() {
         getContent(contentKey)
     }, [])
 
-    function handleTextChange(event) {
+    function handleContentChange(event) {
         setContent(event.target.value)
     }
 
-    async function saveContent(contentKey, content) {
+    async function saveContent(contentKey, content, expiresIn) {
         const requestBody = {
             key: contentKey,
             content,
-            expiresIn: 5
+            expiresIn
         }
 
         const response = await fetch("http://localhost:8080/api/v1/save/", {
@@ -70,13 +71,23 @@ function Board() {
 
     function handleSaveClick() {
         setSaveStatus(0)
-        saveContent(contentKey, content)
+        saveContent(contentKey, content, expiry)
+    }
+
+    function handleExpiryTimeChange(event) {
+        let value = event.target.value;
+        setExpiry(value > 10 ? 10 : value)
     }
 
     return (
         <main className="main">
             <div className="button-container">
                 <div className="button" onClick={handleSaveClick}>Save It</div>
+                <div className="input-box">
+                    <label htmlFor="expiryMinutes" style={{'font-weight': 'bold'}}>Expires in (10 minutes max)</label>
+                    <input style={{'text-align': 'center'}} min={0} max={10} id="expiryMinutes" type="number"
+                           onChange={handleExpiryTimeChange} value={expiry}/>
+                </div>
                 <CopyToClipboard text={content}>
                     <div className="button">Copy It</div>
                 </CopyToClipboard>
@@ -89,7 +100,7 @@ function Board() {
                 </p>
 
             }
-            <textarea className="content-text-area" value={content} onChange={handleTextChange}/>
+            <textarea className="content-text-area" value={content} onChange={handleContentChange}/>
         </main>
     )
 }
